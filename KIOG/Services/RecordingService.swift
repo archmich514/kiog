@@ -37,12 +37,12 @@ class RecordingService: NSObject, ObservableObject {
         let session = AVAudioSession.sharedInstance()
 
         // バックグラウンド録音に最適な設定
-        // .record カテゴリ: 録音専用（バックグラウンドでの録音継続を保証）
+        // .playAndRecord カテゴリ: バックグラウンド録音に必要
         // .spokenAudio モード: 音声録音に最適化
         try session.setCategory(
-            .record,
+            .playAndRecord,
             mode: .spokenAudio,
-            options: []
+            options: [.defaultToSpeaker, .allowBluetooth]
         )
 
         // オーディオセッションをアクティブ化
