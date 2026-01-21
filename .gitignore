@@ -41,6 +41,10 @@ Carthage/Build/
 GoogleService-Info.plist
 google-services.json
 
+# Cloud Functions
+functions/node_modules/
+functions/.firebase/
+
 # IDEs
 .idea/
 *.pbxuser

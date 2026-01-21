@@ -13,13 +13,16 @@
 		1C06221ACBE249109F22D321 /* KIOGApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D6D0D079F4C603A1176A50 /* KIOGApp.swift */; };
 		21BE233921D9AAA59CAC95BD /* UnitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EF7B4E3A324BE33D04E74 /* UnitService.swift */; };
 		36F33C6FF4B785592FC7512E /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A65A45DD74A1E6ACE2A0BBE /* SplashScreen.swift */; };
+		3729470DC2FED6C51A07EB09 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = E0E5DDC46156CC0C7022D719 /* FirebaseFunctions */; };
 		3AF216C63B3998E1711CFFFE /* KiogListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024B93BF2ADB93CAEA448C09 /* KiogListScreen.swift */; };
 		4C8018A967DB9191DABD7D75 /* RecordingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F1F4A0029E96149A5F0DEA /* RecordingModel.swift */; };
 		4E4F9D2DCF14FFDD9E86B08B /* RecordingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5832563AE2328089DF9DF88 /* RecordingScreen.swift */; };
+		4F85295E15E5AE02A53A3DBE /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C85C52528069F052E2177DDC /* FirebaseMessaging */; };
 		522F536AB7E86DCD82FC98BD /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180B98E3BBDCD430C13061D5 /* AppColors.swift */; };
 		6728FCB188BD8448F2B3FE86 /* QuestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DE43B539BAAED3E889B5F5 /* QuestionCard.swift */; };
 		68EB9C8B388E6DEEEB246FD7 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D4B0F00C955A256C6FAD6A93 /* FirebaseStorage */; };
 		7317473D26AB1F4E1BC48921 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDF1766D78BE87C3A3916BC /* ContentView.swift */; };
+		797437DE2E780AB43F07536D /* FCMService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDFAA00BEC75BD821D7D63A /* FCMService.swift */; };
 		7E66C0920D89CCB666B11D08 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907A660000E47A27FB91302C /* PrimaryButton.swift */; };
 		83D393324340F2EA54709AA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 66FE4FA7554949E281D7F264 /* Assets.xcassets */; };
 		90F2C6A648B9F70C85E5F506 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EDF2345F6A3AE46CE256CEF0 /* FirebaseAuth */; };
@@ -38,6 +41,7 @@
 		E7E4D5BDCF4BD175D3403227 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1EE7ADFC11E37AF6FEB2B1 /* BackButton.swift */; };
 		EAD63CE67F11FA614FDD5C95 /* UnitSelectScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11158FF377355E26376AFDAC /* UnitSelectScreen.swift */; };
 		FE16AB5D497340A75D938573 /* SecondaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856D63F8A1E9C8D61C22AD6F /* SecondaryButton.swift */; };
+		FE92967D10A6DC6E25844819 /* DebugService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9713C2E5B9DCBC72637E1CC0 /* DebugService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +58,7 @@
 		856D63F8A1E9C8D61C22AD6F /* SecondaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryButton.swift; sourceTree = "<group>"; };
 		8F8A658D0C0FC246FAE68186 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		907A660000E47A27FB91302C /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		9713C2E5B9DCBC72637E1CC0 /* DebugService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugService.swift; sourceTree = "<group>"; };
 		9A1EE7ADFC11E37AF6FEB2B1 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		9A2EF7B4E3A324BE33D04E74 /* UnitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitService.swift; sourceTree = "<group>"; };
 		9C0103516723CF50D26FF46F /* ReportCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportCard.swift; sourceTree = "<group>"; };
@@ -67,6 +72,7 @@
 		C94E67266E6E3A442A7169BC /* ReportDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDetailScreen.swift; sourceTree = "<group>"; };
 		D5832563AE2328089DF9DF88 /* RecordingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingScreen.swift; sourceTree = "<group>"; };
 		D7D6D0D079F4C603A1176A50 /* KIOGApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KIOGApp.swift; sourceTree = "<group>"; };
+		DCDFAA00BEC75BD821D7D63A /* FCMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMService.swift; sourceTree = "<group>"; };
 		DD93BC96FEAE7E005E74A07B /* KIOG.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = KIOG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDDF1766D78BE87C3A3916BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FEA1ED8FB7B56C87B6E50B26 /* NavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManager.swift; sourceTree = "<group>"; };
@@ -81,6 +87,8 @@
 				90F2C6A648B9F70C85E5F506 /* FirebaseAuth in Frameworks */,
 				E746F7009CF95756A761DAA5 /* FirebaseFirestore in Frameworks */,
 				68EB9C8B388E6DEEEB246FD7 /* FirebaseStorage in Frameworks */,
+				4F85295E15E5AE02A53A3DBE /* FirebaseMessaging in Frameworks */,
+				3729470DC2FED6C51A07EB09 /* FirebaseFunctions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +171,8 @@
 			isa = PBXGroup;
 			children = (
 				B6D9265D0EBC360E9B37846A /* AuthService.swift */,
+				9713C2E5B9DCBC72637E1CC0 /* DebugService.swift */,
+				DCDFAA00BEC75BD821D7D63A /* FCMService.swift */,
 				FED46408DF2A59030C30C13F /* NotificationService.swift */,
 				39A642D5644A244BB61954E7 /* RecordingService.swift */,
 				9A2EF7B4E3A324BE33D04E74 /* UnitService.swift */,
@@ -199,6 +209,8 @@
 				EDF2345F6A3AE46CE256CEF0 /* FirebaseAuth */,
 				2AAB31B407B9990F8DA98257 /* FirebaseFirestore */,
 				D4B0F00C955A256C6FAD6A93 /* FirebaseStorage */,
+				C85C52528069F052E2177DDC /* FirebaseMessaging */,
+				E0E5DDC46156CC0C7022D719 /* FirebaseFunctions */,
 			);
 			productName = KIOG;
 			productReference = DD93BC96FEAE7E005E74A07B /* KIOG.app */;
@@ -263,6 +275,8 @@
 				E7E4D5BDCF4BD175D3403227 /* BackButton.swift in Sources */,
 				7317473D26AB1F4E1BC48921 /* ContentView.swift in Sources */,
 				103FB6D62BD472848896C631 /* CustomTextField.swift in Sources */,
+				FE92967D10A6DC6E25844819 /* DebugService.swift in Sources */,
+				797437DE2E780AB43F07536D /* FCMService.swift in Sources */,
 				1C06221ACBE249109F22D321 /* KIOGApp.swift in Sources */,
 				3AF216C63B3998E1711CFFFE /* KiogListScreen.swift in Sources */,
 				9EE67DB1C1B619F653E819EA /* LivingScreen.swift in Sources */,
@@ -504,10 +518,20 @@
 			package = 00D0C9322B2A34E15D4F37DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
+		C85C52528069F052E2177DDC /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00D0C9322B2A34E15D4F37DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
 		D4B0F00C955A256C6FAD6A93 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 00D0C9322B2A34E15D4F37DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		E0E5DDC46156CC0C7022D719 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00D0C9322B2A34E15D4F37DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
 		};
 		EDF2345F6A3AE46CE256CEF0 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;

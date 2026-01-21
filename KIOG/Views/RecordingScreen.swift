@@ -48,12 +48,12 @@ struct RecordingScreen: View {
                 showPermissionAlert = true
             }
         }
-        .alert("生成完了", isPresented: $showGenerateConfirmation) {
+        .alert("レコーディング完了", isPresented: $showGenerateConfirmation) {
             Button("完了") {
                 handleGenerate()
             }
         } message: {
-            Text("生成までに時間がかかります。生成が完了したら通知を送ります")
+            Text("23時にレポートが配布されます")
         }
         .confirmationDialog(
             "レコーディングを終了してKIOGを生成しますか？",

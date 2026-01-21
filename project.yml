@@ -26,11 +26,16 @@ targets:
         product: FirebaseFirestore
       - package: Firebase
         product: FirebaseStorage
+      - package: Firebase
+        product: FirebaseMessaging
+      - package: Firebase
+        product: FirebaseFunctions
     info:
       path: KIOG/Info.plist
       properties:
         UIBackgroundModes:
           - audio
+          - remote-notification
         NSMicrophoneUsageDescription: 会話を録音してレポートを生成するために使用します
     settings:
       base:

@@ -1,16 +1,12 @@
 import SwiftUI
+import FirebaseFirestore
 
 struct KiogListScreen: View {
     @EnvironmentObject var navigationManager: NavigationManager
+    @State private var reports: [Report] = []
+    @State private var isLoading = true
 
-    private let sampleReports = [
-        Report(month: 1, day: 15, content: "今日は二人でカフェに行った。新しいメニューを試してみて、とても美味しかった。"),
-        Report(month: 1, day: 14, content: "映画を観に行った。久しぶりのデートで楽しかった。"),
-        Report(month: 1, day: 13, content: "一緒に料理を作った。ハンバーグを作って大成功!"),
-        Report(month: 1, day: 12, content: "公園を散歩した。天気が良くて気持ちよかった。"),
-        Report(month: 1, day: 11, content: "ゲームを一緒にプレイした。すごく盛り上がった!"),
-        Report(month: 1, day: 10, content: "誕生日のお祝いをした。サプライズ大成功!")
-    ]
+    private let db = Firestore.firestore()
 
     var body: some View {
         ZStack {
@@ -20,20 +16,35 @@ struct KiogListScreen: View {
             VStack(spacing: 0) {
                 headerSection
 
-                ScrollView {
-                    VStack(spacing: 16) {
-                        ForEach(sampleReports) { report in
-                            ReportCard(dateText: report.dateText) {
-                                navigationManager.navigateTo(.reportDetail(report: report))
+                if isLoading {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                } else if reports.isEmpty {
+                    Spacer()
+                    Text("KIOGはありません")
+                        .font(.system(size: 16))
+                        .foregroundColor(AppColors.grayText)
+                    Spacer()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(reports) { report in
+                                ReportCard(dateText: report.dateText) {
+                                    navigationManager.navigateTo(.reportDetail(report: report))
+                                }
                             }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
                 }
             }
         }
         .navigationBarBackButtonHidden(true)
+        .task {
+            await fetchReports()
+        }
     }
 
     private var headerSection: some View {
@@ -52,11 +63,47 @@ struct KiogListScreen: View {
         .padding(.horizontal, 16)
         .padding(.top, 32)
     }
+
+    private func fetchReports() async {
+        do {
+            let snapshot = try await db.collection("reports")
+                .whereField("unitId", isEqualTo: navigationManager.unitId)
+                .order(by: "createdAt", descending: true)
+                .getDocuments()
+
+            let fetchedReports = snapshot.documents.compactMap { doc -> Report? in
+                let data = doc.data()
+                guard let date = data["date"] as? String,
+                      let content = data["content"] as? String else { return nil }
+
+                let components = date.split(separator: "-")
+                guard components.count == 3,
+                      let month = Int(components[1]),
+                      let day = Int(components[2]) else { return nil }
+
+                return Report(month: month, day: day, content: content)
+            }
+
+            await MainActor.run {
+                self.reports = fetchedReports
+                self.isLoading = false
+            }
+        } catch {
+            print("Failed to fetch reports: \(error)")
+            await MainActor.run {
+                self.isLoading = false
+            }
+        }
+    }
 }
 
 #Preview {
     NavigationStack {
         KiogListScreen()
-            .environmentObject(NavigationManager())
+            .environmentObject({
+                let manager = NavigationManager()
+                manager.unitId = "ABC12345"
+                return manager
+            }())
     }
 }

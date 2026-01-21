@@ -1,32 +1,16 @@
 import SwiftUI
+import FirebaseFirestore
 
 struct LivingScreen: View {
     @EnvironmentObject var navigationManager: NavigationManager
-    @State private var showAnswerInput = false
-    @State private var selectedQuestion: Question?
-    @State private var answerText = ""
+    @State private var reports: [Report] = []
+    @State private var isLoading = true
+    @State private var isDebugLoading = false
+    @State private var showDebugAlert = false
+    @State private var showDebugError = false
+    @State private var debugErrorMessage = ""
 
-    private let sampleReports = [
-        Report(month: 1, day: 15, content: "今日は二人でカフェに行った。新しいメニューを試してみて、とても美味しかった。"),
-        Report(month: 1, day: 14, content: "映画を観に行った。久しぶりのデートで楽しかった。"),
-        Report(month: 1, day: 13, content: "一緒に料理を作った。ハンバーグを作って大成功!")
-    ]
-
-    private let sampleQuestions = [
-        Question(text: "今日の晩ごはんは何がいい?"),
-        Question(text: "週末どこに行きたい?"),
-        Question(text: "最近ハマっていることは?")
-    ]
-
-    private let sampleAnswer = Answer(
-        name: "太郎",
-        question: "今日の晩ごはんは何がいい?",
-        answerText: "カレーが食べたいな"
-    )
-
-    private var hasKiog: Bool {
-        !sampleReports.isEmpty
-    }
+    private let db = Firestore.firestore()
 
     var body: some View {
         ZStack {
@@ -37,42 +21,59 @@ struct LivingScreen: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
                         headerSection
-
-                        if hasKiog {
-                            kiogSection
-                            queSection
-                            answerSection
-                        } else {
-                            emptyKiogSection
-                        }
+                        kiogSection
                     }
                 }
 
                 footerSection
             }
+
+            if isDebugLoading {
+                debugLoadingOverlay
+            }
         }
         .navigationBarBackButtonHidden(true)
-        .alert("回答を入力", isPresented: $showAnswerInput) {
-            TextField("回答を入力してください", text: $answerText)
-            Button("送信") {
-                answerText = ""
+        .task {
+            await fetchReports()
+        }
+        .alert("デバッグ実行", isPresented: $showDebugAlert) {
+            Button("実行") {
+                Task { await triggerDebugReport() }
             }
-            Button("キャンセル", role: .cancel) {
-                answerText = ""
-            }
+            Button("キャンセル", role: .cancel) {}
         } message: {
-            if let question = selectedQuestion {
-                Text(question.text)
-            }
+            Text("レポートを即時生成しますか？\n（録音データが必要です）")
+        }
+        .alert("エラー", isPresented: $showDebugError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(debugErrorMessage)
         }
     }
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("LIVING")
-                .font(.system(size: 40, weight: .bold))
-                .foregroundColor(.black)
-                .tracking(1.8)
+            HStack {
+                Text("LIVING")
+                    .font(.system(size: 40, weight: .bold))
+                    .foregroundColor(.black)
+                    .tracking(1.8)
+
+                Spacer()
+
+                // DEBUGボタン
+                Button(action: {
+                    showDebugAlert = true
+                }) {
+                    Text("DEBUG")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.red)
+                        .cornerRadius(4)
+                }
+            }
 
             Text("#\(navigationManager.unitId)")
                 .font(.system(size: 24))
@@ -93,76 +94,37 @@ struct LivingScreen: View {
 
                 Spacer()
 
-                Button(action: {
-                    navigationManager.navigateTo(.kiogList)
-                }) {
-                    Text("ALL →")
-                        .font(.system(size: 24))
-                        .foregroundColor(.black)
-                        .tracking(1.8)
-                }
-            }
-
-            VStack(spacing: 16) {
-                ForEach(sampleReports.prefix(3)) { report in
-                    ReportCard(dateText: report.dateText) {
-                        navigationManager.navigateTo(.reportDetail(report: report))
+                if !reports.isEmpty {
+                    Button(action: {
+                        navigationManager.navigateTo(.kiogList)
+                    }) {
+                        Text("ALL →")
+                            .font(.system(size: 24))
+                            .foregroundColor(.black)
+                            .tracking(1.8)
                     }
                 }
             }
-            .padding(.vertical, 8)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
 
-    private var emptyKiogSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("KIOG")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(.black)
-                .tracking(1.8)
-
-            Text("KIOGはありません")
-                .font(.system(size: 16))
-                .foregroundColor(AppColors.grayText)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
-
-    private var queSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Que")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(.black)
-                .tracking(1.8)
-
-            VStack(spacing: 16) {
-                ForEach(sampleQuestions) { question in
-                    QuestionCard(questionText: question.text) {
-                        selectedQuestion = question
-                        showAnswerInput = true
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 32)
+            } else if reports.isEmpty {
+                Text("KIOGはありません")
+                    .font(.system(size: 16))
+                    .foregroundColor(AppColors.grayText)
+                    .padding(.vertical, 8)
+            } else {
+                VStack(spacing: 16) {
+                    ForEach(reports.prefix(3)) { report in
+                        ReportCard(dateText: report.dateText) {
+                            navigationManager.navigateTo(.reportDetail(report: report))
+                        }
                     }
                 }
+                .padding(.vertical, 8)
             }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
-
-    private var answerSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Answer")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(.black)
-                .tracking(1.8)
-
-            AnswerCard(
-                name: sampleAnswer.name,
-                question: sampleAnswer.question,
-                answer: sampleAnswer.answerText
-            )
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
@@ -184,6 +146,79 @@ struct LivingScreen: View {
         }
         .padding(.vertical, 32)
         .background(AppColors.background)
+    }
+
+    private var debugLoadingOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .tint(.white)
+                Text("レポート生成中...")
+                    .foregroundColor(.white)
+                    .font(.headline)
+            }
+            .padding(40)
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(16)
+        }
+    }
+
+    private func fetchReports() async {
+        do {
+            let snapshot = try await db.collection("reports")
+                .whereField("unitId", isEqualTo: navigationManager.unitId)
+                .order(by: "createdAt", descending: true)
+                .limit(to: 10)
+                .getDocuments()
+
+            let fetchedReports = snapshot.documents.compactMap { doc -> Report? in
+                let data = doc.data()
+                guard let date = data["date"] as? String,
+                      let content = data["content"] as? String else { return nil }
+
+                let components = date.split(separator: "-")
+                guard components.count == 3,
+                      let month = Int(components[1]),
+                      let day = Int(components[2]) else { return nil }
+
+                return Report(month: month, day: day, content: content)
+            }
+
+            await MainActor.run {
+                self.reports = fetchedReports
+                self.isLoading = false
+            }
+        } catch {
+            print("Failed to fetch reports: \(error)")
+            await MainActor.run {
+                self.isLoading = false
+            }
+        }
+    }
+
+    private func triggerDebugReport() async {
+        await MainActor.run {
+            isDebugLoading = true
+        }
+
+        do {
+            try await DebugService.shared.triggerReportGeneration(unitId: navigationManager.unitId)
+            await fetchReports()
+        } catch {
+            print("Debug report generation failed: \(error)")
+            await MainActor.run {
+                debugErrorMessage = "レポート生成に失敗しました。\n録音データがあるか確認してください。"
+                showDebugError = true
+            }
+        }
+
+        await MainActor.run {
+            isDebugLoading = false
+        }
     }
 }
 
