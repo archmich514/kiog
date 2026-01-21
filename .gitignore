@@ -37,6 +37,10 @@ Carthage/Build/
 *.swp
 *~
 
+# Firebase (sensitive)
+GoogleService-Info.plist
+google-services.json
+
 # IDEs
 .idea/
 *.pbxuser
