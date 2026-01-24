@@ -5,16 +5,20 @@ struct LivingScreen: View {
     @EnvironmentObject var navigationManager: NavigationManager
     @State private var reports: [Report] = []
     @State private var isLoading = true
-    @State private var isDebugLoading = false
-    @State private var showDebugAlert = false
-    @State private var showDebugError = false
-    @State private var debugErrorMessage = ""
 
     // QUE/ANS関連
     @State private var currentQuestions: [QuestionItem] = []
     @State private var answeredQuestions: Set<String> = []
     @State private var pendingAnswers: [AnswerItem] = []
     @State private var selectedQuestion: QuestionItem?
+
+    // Debug用
+    #if DEBUG
+    @State private var isDebugLoading = false
+    @State private var showDebugAlert = false
+    @State private var showDebugError = false
+    @State private var debugErrorMessage = ""
+    #endif
 
     private let db = Firestore.firestore()
 
@@ -48,9 +52,11 @@ struct LivingScreen: View {
                 footerSection
             }
 
+            #if DEBUG
             if isDebugLoading {
                 debugLoadingOverlay
             }
+            #endif
         }
         .navigationBarBackButtonHidden(true)
         .task {
@@ -74,6 +80,7 @@ struct LivingScreen: View {
                 }
             )
         }
+        #if DEBUG
         .alert("デバッグ実行", isPresented: $showDebugAlert) {
             Button("実行") {
                 Task { await triggerDebugReport() }
@@ -87,6 +94,7 @@ struct LivingScreen: View {
         } message: {
             Text(debugErrorMessage)
         }
+        #endif
     }
 
     private var headerSection: some View {
@@ -98,19 +106,6 @@ struct LivingScreen: View {
                     .tracking(1.8)
 
                 Spacer()
-
-                // DEBUGボタン
-                Button(action: {
-                    showDebugAlert = true
-                }) {
-                    Text("DEBUG")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.red)
-                        .cornerRadius(4)
-                }
             }
 
             Text("#\(navigationManager.unitId)")
@@ -211,7 +206,7 @@ struct LivingScreen: View {
     }
 
     private var footerSection: some View {
-        VStack {
+        VStack(spacing: 0) {
             Button(action: {
                 navigationManager.navigateTo(.recording)
             }) {
@@ -223,11 +218,90 @@ struct LivingScreen: View {
                     .background(Color.black)
             }
             .padding(.horizontal, 16)
+            .padding(.top, 32)
+
+            #if DEBUG
+            debugButtonsSection
+            #endif
         }
-        .padding(.vertical, 32)
+        .padding(.bottom, 16)
         .background(AppColors.background)
     }
 
+    #if DEBUG
+    private var debugButtonsSection: some View {
+        VStack(spacing: 8) {
+            Divider()
+                .padding(.top, 16)
+
+            Text("DEBUG MODE")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(.gray)
+
+            HStack(spacing: 8) {
+                // ダミーデータ投入
+                Button(action: insertDummyData) {
+                    VStack(spacing: 2) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 16))
+                        Text("QUE/ANS")
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(.blue)
+                    .frame(width: 60, height: 44)
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(8)
+                }
+
+                // リセット＆再投入
+                Button(action: resetAndInsertDummyData) {
+                    VStack(spacing: 2) {
+                        Image(systemName: "arrow.clockwise.circle.fill")
+                            .font(.system(size: 16))
+                        Text("リセット")
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(.orange)
+                    .frame(width: 60, height: 44)
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(8)
+                }
+
+                // クリア
+                Button(action: clearAllDummyData) {
+                    VStack(spacing: 2) {
+                        Image(systemName: "trash.circle.fill")
+                            .font(.system(size: 16))
+                        Text("クリア")
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(.red)
+                    .frame(width: 60, height: 44)
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(8)
+                }
+
+                // レポート即時生成
+                Button(action: { showDebugAlert = true }) {
+                    VStack(spacing: 2) {
+                        Image(systemName: "doc.badge.gearshape.fill")
+                            .font(.system(size: 16))
+                        Text("レポート")
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(.purple)
+                    .frame(width: 60, height: 44)
+                    .background(Color.purple.opacity(0.1))
+                    .cornerRadius(8)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+        }
+    }
+    #endif
+
+    #if DEBUG
     private var debugLoadingOverlay: some View {
         ZStack {
             Color.black.opacity(0.4)
@@ -246,6 +320,7 @@ struct LivingScreen: View {
             .cornerRadius(16)
         }
     }
+    #endif
 
     private func fetchReports() async {
         do {
@@ -307,6 +382,7 @@ struct LivingScreen: View {
         }
     }
 
+    #if DEBUG
     private func triggerDebugReport() async {
         await MainActor.run {
             isDebugLoading = true
@@ -327,6 +403,56 @@ struct LivingScreen: View {
             isDebugLoading = false
         }
     }
+
+    private func insertDummyData() {
+        // ダミーの質問（QUE）
+        currentQuestions = [
+            QuestionItem(questionId: "debug001", text: "今日の晩ごはんは何がいい？", isAI: false),
+            QuestionItem(questionId: "debug002", text: "今一番したいことは？", isAI: false),
+            QuestionItem(questionId: nil, text: "昨日カレー食べたいって言ってたけど、今日は何食べたい？", isAI: true)
+        ]
+        answeredQuestions = []
+
+        // ダミーの回答（ANS）- 予想待ち
+        pendingAnswers = [
+            AnswerItem(
+                documentId: "dummy_answer_001",
+                from: [
+                    "userName": "テスト太郎",
+                    "questionText": "好きなお菓子は？",
+                    "answer": "チョコレート",
+                    "userId": "dummy_user_001",
+                    "timeSlot": "morning",
+                    "date": "2026-01-24"
+                ]
+            )!,
+            AnswerItem(
+                documentId: "dummy_answer_002",
+                from: [
+                    "userName": "テスト太郎",
+                    "questionText": "子供の頃好きだった遊びは？",
+                    "answer": "かくれんぼ",
+                    "userId": "dummy_user_001",
+                    "timeSlot": "evening",
+                    "date": "2026-01-24"
+                ]
+            )!
+        ]
+    }
+
+    private func resetAndInsertDummyData() {
+        // 回答済みをクリア
+        answeredQuestions = []
+        // ダミーデータを再投入
+        insertDummyData()
+    }
+
+    private func clearAllDummyData() {
+        currentQuestions = []
+        answeredQuestions = []
+        pendingAnswers = []
+    }
+    #endif
 
     private func parseQuestionAnswers(_ data: Any?) -> [QuestionAnswerData] {
         guard let qaArray = data as? [[String: Any]] else { return [] }
