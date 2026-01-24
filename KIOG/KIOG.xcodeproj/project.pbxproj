@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		0C7C8838DB5C13B53BC70F16 /* NextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0025D5147C0C8F6788C4DD11 /* NextButton.swift */; };
 		0CF50DEF48593966FB5E83F6 /* RecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A642D5644A244BB61954E7 /* RecordingService.swift */; };
+		PHASE5001 /* AnswerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHASE5101 /* AnswerItem.swift */; };
+		PHASE5002 /* QuestionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHASE5102 /* QuestionItem.swift */; };
+		PHASE5003 /* PredictionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHASE5103 /* PredictionScreen.swift */; };
+		PHASE5004 /* AnswerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHASE5104 /* AnswerInputView.swift */; };
+		PHASE5005 /* PredictionInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHASE5105 /* PredictionInputView.swift */; };
+		PHASE5006 /* AnswerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHASE5106 /* AnswerService.swift */; };
 		103FB6D62BD472848896C631 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0113CFC928A3360E411CF61 /* CustomTextField.swift */; };
 		1C06221ACBE249109F22D321 /* KIOGApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D6D0D079F4C603A1176A50 /* KIOGApp.swift */; };
 		21BE233921D9AAA59CAC95BD /* UnitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2EF7B4E3A324BE33D04E74 /* UnitService.swift */; };
@@ -46,6 +52,12 @@
 
 /* Begin PBXFileReference section */
 		0025D5147C0C8F6788C4DD11 /* NextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextButton.swift; sourceTree = "<group>"; };
+		PHASE5101 /* AnswerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerItem.swift; sourceTree = "<group>"; };
+		PHASE5102 /* QuestionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionItem.swift; sourceTree = "<group>"; };
+		PHASE5103 /* PredictionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionScreen.swift; sourceTree = "<group>"; };
+		PHASE5104 /* AnswerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerInputView.swift; sourceTree = "<group>"; };
+		PHASE5105 /* PredictionInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionInputView.swift; sourceTree = "<group>"; };
+		PHASE5106 /* AnswerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerService.swift; sourceTree = "<group>"; };
 		024B93BF2ADB93CAEA448C09 /* KiogListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KiogListScreen.swift; sourceTree = "<group>"; };
 		06CAA56D94AA9BBDDE009A26 /* AnswerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerCard.swift; sourceTree = "<group>"; };
 		11158FF377355E26376AFDAC /* UnitSelectScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSelectScreen.swift; sourceTree = "<group>"; };
@@ -98,8 +110,10 @@
 		00783B7BFB2DE19385510471 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				PHASE5101 /* AnswerItem.swift */,
 				180B98E3BBDCD430C13061D5 /* AppColors.swift */,
 				FEA1ED8FB7B56C87B6E50B26 /* NavigationManager.swift */,
+				PHASE5102 /* QuestionItem.swift */,
 				15F1F4A0029E96149A5F0DEA /* RecordingModel.swift */,
 			);
 			path = Models;
@@ -132,8 +146,11 @@
 		48E4E8378E148E949A207D9F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				PHASE5104 /* AnswerInputView.swift */,
 				024B93BF2ADB93CAEA448C09 /* KiogListScreen.swift */,
 				BE1F1229F9B295C2CA363D58 /* LivingScreen.swift */,
+				PHASE5105 /* PredictionInputView.swift */,
+				PHASE5103 /* PredictionScreen.swift */,
 				D5832563AE2328089DF9DF88 /* RecordingScreen.swift */,
 				BEB2A8BBAD6D6DB545626B07 /* RegistrationScreen.swift */,
 				C94E67266E6E3A442A7169BC /* ReportDetailScreen.swift */,
@@ -170,6 +187,7 @@
 		9EA286799A4D04F5DB12AD39 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				PHASE5106 /* AnswerService.swift */,
 				B6D9265D0EBC360E9B37846A /* AuthService.swift */,
 				9713C2E5B9DCBC72637E1CC0 /* DebugService.swift */,
 				DCDFAA00BEC75BD821D7D63A /* FCMService.swift */,
@@ -269,6 +287,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A322CE87744AD679121071F6 /* AnswerCard.swift in Sources */,
+				PHASE5004 /* AnswerInputView.swift in Sources */,
+				PHASE5001 /* AnswerItem.swift in Sources */,
+				PHASE5006 /* AnswerService.swift in Sources */,
 				522F536AB7E86DCD82FC98BD /* AppColors.swift in Sources */,
 				97A0987CD820CB2223B06673 /* AuthService.swift in Sources */,
 				E7E4D5BDCF4BD175D3403227 /* BackButton.swift in Sources */,
@@ -282,8 +303,11 @@
 				BEE2289B2C357617398D3E78 /* NavigationManager.swift in Sources */,
 				0C7C8838DB5C13B53BC70F16 /* NextButton.swift in Sources */,
 				92FADDE0BAF24CBA6ED1BEC1 /* NotificationService.swift in Sources */,
+				PHASE5005 /* PredictionInputView.swift in Sources */,
+				PHASE5003 /* PredictionScreen.swift in Sources */,
 				7E66C0920D89CCB666B11D08 /* PrimaryButton.swift in Sources */,
 				6728FCB188BD8448F2B3FE86 /* QuestionCard.swift in Sources */,
+				PHASE5002 /* QuestionItem.swift in Sources */,
 				4C8018A967DB9191DABD7D75 /* RecordingModel.swift in Sources */,
 				4E4F9D2DCF14FFDD9E86B08B /* RecordingScreen.swift in Sources */,
 				0CF50DEF48593966FB5E83F6 /* RecordingService.swift in Sources */,
