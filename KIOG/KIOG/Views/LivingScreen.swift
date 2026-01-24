@@ -37,8 +37,8 @@ struct LivingScreen: View {
                         headerSection
                         kiogSection
 
-                        // QUEセクション（未回答の質問がある場合）
-                        if !unansweredQuestions.isEmpty {
+                        // QUEセクション（質問があって、かつ1つも回答してない場合だけ表示）
+                        if !currentQuestions.isEmpty && answeredQuestions.isEmpty {
                             queSection
                         }
 
