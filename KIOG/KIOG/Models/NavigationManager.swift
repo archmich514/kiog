@@ -68,6 +68,12 @@ class NavigationManager: ObservableObject {
     @Published var userGender: Gender?
     @Published var unitId: String = ""
 
+    // ダミーデータ用：削除通知
+    #if DEBUG
+    @Published var pendingAnswerIdToRemove: String? = nil
+    @Published var answeredQuestionTextToAdd: String? = nil
+    #endif
+
     func navigateTo(_ route: AppRoute) {
         path.append(route)
     }

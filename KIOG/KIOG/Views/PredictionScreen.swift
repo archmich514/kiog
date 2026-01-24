@@ -149,6 +149,8 @@ struct PredictionScreen: View {
         #if DEBUG
         if answer.id.count < 20 {
             print("[DEBUG] Dummy data detected, skipping Firestore update")
+            // NavigationManagerに削除を通知
+            navigationManager.pendingAnswerIdToRemove = answer.id
             showConfirmAlert = true
             return
         }

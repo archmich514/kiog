@@ -18,6 +18,7 @@ struct LivingScreen: View {
     @State private var showDebugAlert = false
     @State private var showDebugError = false
     @State private var debugErrorMessage = ""
+    @State private var isUsingDummyData = false
     #endif
 
     private let db = Firestore.firestore()
@@ -64,6 +65,13 @@ struct LivingScreen: View {
             await fetchQuestionsAndAnswers()
         }
         .onAppear {
+            #if DEBUG
+            // ダミーデータ使用中はFirestore fetchをスキップ
+            if isUsingDummyData {
+                return
+            }
+            #endif
+
             // PredictionScreenから戻ってきた時にデータを更新
             Task {
                 await fetchQuestionsAndAnswers()
@@ -76,10 +84,33 @@ struct LivingScreen: View {
                 userId: AuthService.shared.userId ?? "",
                 userName: navigationManager.userName,
                 onComplete: {
+                    #if DEBUG
+                    if isUsingDummyData {
+                        // ダミーデータ中はfetchをスキップ
+                        return
+                    }
+                    #endif
                     Task { await fetchQuestionsAndAnswers() }
                 }
             )
+            .environmentObject(navigationManager)
         }
+        #if DEBUG
+        .onChange(of: navigationManager.pendingAnswerIdToRemove) { _, newValue in
+            if let answerId = newValue, isUsingDummyData {
+                // 該当のANSを削除
+                pendingAnswers.removeAll { $0.id == answerId }
+                navigationManager.pendingAnswerIdToRemove = nil
+            }
+        }
+        .onChange(of: navigationManager.answeredQuestionTextToAdd) { _, newValue in
+            if let questionText = newValue, isUsingDummyData {
+                // 回答済みに追加
+                answeredQuestions.insert(questionText)
+                navigationManager.answeredQuestionTextToAdd = nil
+            }
+        }
+        #endif
         #if DEBUG
         .alert("デバッグ実行", isPresented: $showDebugAlert) {
             Button("実行") {
@@ -405,6 +436,8 @@ struct LivingScreen: View {
     }
 
     private func insertDummyData() {
+        isUsingDummyData = true
+
         // ダミーの質問（QUE）
         currentQuestions = [
             QuestionItem(questionId: "debug001", text: "今日の晩ごはんは何がいい？", isAI: false),
@@ -451,6 +484,7 @@ struct LivingScreen: View {
         currentQuestions = []
         answeredQuestions = []
         pendingAnswers = []
+        isUsingDummyData = false
     }
     #endif
 

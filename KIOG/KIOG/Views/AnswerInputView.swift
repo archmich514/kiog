@@ -7,6 +7,8 @@ struct AnswerInputView: View {
     let userName: String
     let onComplete: () -> Void
 
+    @EnvironmentObject var navigationManager: NavigationManager
+
     @State private var answerText = ""
     @State private var isSubmitting = false
     @Environment(\.dismiss) var dismiss
@@ -89,6 +91,21 @@ struct AnswerInputView: View {
         isSubmitting = true
 
         Task {
+            // ダミーデータチェック（開発用）
+            #if DEBUG
+            if question.questionId?.hasPrefix("debug") == true || question.questionId == nil {
+                print("[DEBUG] Dummy question detected, skipping Firestore update")
+                await MainActor.run {
+                    // NavigationManagerに回答済みを通知
+                    navigationManager.answeredQuestionTextToAdd = question.text
+                    isSubmitting = false
+                    onComplete()
+                    dismiss()
+                }
+                return
+            }
+            #endif
+
             do {
                 try await AnswerService.shared.submitAnswer(
                     question: question,
@@ -120,4 +137,5 @@ struct AnswerInputView: View {
         userName: "太郎",
         onComplete: {}
     )
+    .environmentObject(NavigationManager())
 }
