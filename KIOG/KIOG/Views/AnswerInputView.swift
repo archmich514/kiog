@@ -114,7 +114,7 @@ struct AnswerInputView: View {
 
 #Preview {
     AnswerInputView(
-        question: QuestionItem(id: "q001", text: "今日の晩ごはんは何がいい？", isAI: false),
+        question: QuestionItem(questionId: "q001", text: "今日の晩ごはんは何がいい？", isAI: false),
         unitId: "ABC12345",
         userId: "user123",
         userName: "太郎",
