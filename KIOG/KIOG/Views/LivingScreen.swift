@@ -18,7 +18,6 @@ struct LivingScreen: View {
     @State private var showDebugAlert = false
     @State private var showDebugError = false
     @State private var debugErrorMessage = ""
-    @State private var isUsingDummyData = false
     #endif
 
     private let db = Firestore.firestore()
@@ -62,12 +61,20 @@ struct LivingScreen: View {
         .navigationBarBackButtonHidden(true)
         .task {
             await fetchReports()
+
+            #if DEBUG
+            // ダミーデータ使用中はFirestore fetchをスキップ
+            if navigationManager.isUsingDummyData {
+                return
+            }
+            #endif
+
             await fetchQuestionsAndAnswers()
         }
         .onAppear {
             #if DEBUG
             // ダミーデータ使用中はFirestore fetchをスキップ
-            if isUsingDummyData {
+            if navigationManager.isUsingDummyData {
                 return
             }
             #endif
@@ -85,7 +92,7 @@ struct LivingScreen: View {
                 userName: navigationManager.userName,
                 onComplete: {
                     #if DEBUG
-                    if isUsingDummyData {
+                    if navigationManager.isUsingDummyData {
                         // ダミーデータ中はfetchをスキップ
                         return
                     }
@@ -97,7 +104,7 @@ struct LivingScreen: View {
         }
         #if DEBUG
         .onChange(of: navigationManager.shouldClearAllQuestions) { _, newValue in
-            if newValue && isUsingDummyData {
+            if newValue && navigationManager.isUsingDummyData {
                 // 全QUEを削除
                 currentQuestions = []
                 answeredQuestions = []
@@ -105,7 +112,7 @@ struct LivingScreen: View {
             }
         }
         .onChange(of: navigationManager.pendingAnswerIdToRemove) { _, newValue in
-            if let answerId = newValue, isUsingDummyData {
+            if let answerId = newValue, navigationManager.isUsingDummyData {
                 // 該当のANSだけを削除
                 pendingAnswers.removeAll { $0.id == answerId }
                 navigationManager.pendingAnswerIdToRemove = nil
@@ -437,7 +444,7 @@ struct LivingScreen: View {
     }
 
     private func insertDummyData() {
-        isUsingDummyData = true
+        navigationManager.isUsingDummyData = true
 
         // ダミーの質問（QUE）
         currentQuestions = [
@@ -485,7 +492,7 @@ struct LivingScreen: View {
         currentQuestions = []
         answeredQuestions = []
         pendingAnswers = []
-        isUsingDummyData = false
+        navigationManager.isUsingDummyData = false
     }
     #endif
 

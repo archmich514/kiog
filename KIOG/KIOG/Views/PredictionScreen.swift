@@ -94,7 +94,7 @@ struct PredictionScreen: View {
         }
         .alert("確認", isPresented: $showConfirmAlert) {
             Button("了解") {
-                navigationManager.goToLiving()
+                navigationManager.goBack()
             }
         } message: {
             Text("相手の回答は今日のKIOGで確認できるよ")
