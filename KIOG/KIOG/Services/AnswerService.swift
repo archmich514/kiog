@@ -44,7 +44,7 @@ class AnswerService: ObservableObject {
             "predictorId": userId,
             "predictorName": userName,
             "prediction": prediction,
-            "predictedAt": FieldValue.serverTimestamp()
+            "predictedAt": Timestamp(date: Date())
         ]
 
         let answerRef = db.collection("answers").document(answerId)
