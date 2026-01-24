@@ -142,6 +142,18 @@ struct PredictionScreen: View {
 
     private func submitPrediction() {
         guard let userId = AuthService.shared.userId else { return }
+
+        // ダミーデータチェック（開発用）
+        // FirestoreのドキュメントIDは通常20文字以上のランダム文字列
+        // ダミーIDは短いため、これでスキップ判定する
+        #if DEBUG
+        if answer.id.count < 20 {
+            print("[DEBUG] Dummy data detected, skipping Firestore update")
+            showConfirmAlert = true
+            return
+        }
+        #endif
+
         isSubmitting = true
 
         Task {
