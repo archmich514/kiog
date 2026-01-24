@@ -96,18 +96,19 @@ struct LivingScreen: View {
             .environmentObject(navigationManager)
         }
         #if DEBUG
-        .onChange(of: navigationManager.pendingAnswerIdToRemove) { _, newValue in
-            if let answerId = newValue, isUsingDummyData {
-                // 該当のANSを削除
-                pendingAnswers.removeAll { $0.id == answerId }
-                navigationManager.pendingAnswerIdToRemove = nil
+        .onChange(of: navigationManager.shouldClearAllQuestions) { _, newValue in
+            if newValue && isUsingDummyData {
+                // 全QUEを削除
+                currentQuestions = []
+                answeredQuestions = []
+                navigationManager.shouldClearAllQuestions = false
             }
         }
-        .onChange(of: navigationManager.answeredQuestionTextToAdd) { _, newValue in
-            if let questionText = newValue, isUsingDummyData {
-                // 回答済みに追加
-                answeredQuestions.insert(questionText)
-                navigationManager.answeredQuestionTextToAdd = nil
+        .onChange(of: navigationManager.pendingAnswerIdToRemove) { _, newValue in
+            if let answerId = newValue, isUsingDummyData {
+                // 該当のANSだけを削除
+                pendingAnswers.removeAll { $0.id == answerId }
+                navigationManager.pendingAnswerIdToRemove = nil
             }
         }
         #endif

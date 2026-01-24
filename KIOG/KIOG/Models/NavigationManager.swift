@@ -68,10 +68,10 @@ class NavigationManager: ObservableObject {
     @Published var userGender: Gender?
     @Published var unitId: String = ""
 
-    // ダミーデータ用：削除通知
+    // ダミーデータ用：削除通知（DEBUGビルドのみ）
     #if DEBUG
+    @Published var shouldClearAllQuestions: Bool = false
     @Published var pendingAnswerIdToRemove: String? = nil
-    @Published var answeredQuestionTextToAdd: String? = nil
     #endif
 
     func navigateTo(_ route: AppRoute) {

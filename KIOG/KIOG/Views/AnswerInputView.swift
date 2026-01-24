@@ -96,8 +96,8 @@ struct AnswerInputView: View {
             if question.questionId?.hasPrefix("debug") == true || question.questionId == nil {
                 print("[DEBUG] Dummy question detected, skipping Firestore update")
                 await MainActor.run {
-                    // NavigationManagerに回答済みを通知
-                    navigationManager.answeredQuestionTextToAdd = question.text
+                    // NavigationManagerに全QUE削除を通知
+                    navigationManager.shouldClearAllQuestions = true
                     isSubmitting = false
                     onComplete()
                     dismiss()
