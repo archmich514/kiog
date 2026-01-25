@@ -1,14 +1,17 @@
 const admin = require("firebase-admin");
 const { generateAIQuestion } = require("./generateAIQuestion");
 
-const db = admin.firestore();
+// 遅延初期化（index.jsでinitializeApp()が呼ばれた後に使用される）
+function getDb() {
+  return admin.firestore();
+}
 
 // 全UNITに質問を生成
 async function generateQuestionsForAllUnits(timeSlot) {
   console.log(`Generating ${timeSlot} questions for all units...`);
 
   // アクティブなUNITを取得
-  const unitsSnapshot = await db.collection("units").get();
+  const unitsSnapshot = await getDb().collection("units").get();
 
   for (const unitDoc of unitsSnapshot.docs) {
     const unitId = unitDoc.id;
@@ -19,7 +22,7 @@ async function generateQuestionsForAllUnits(timeSlot) {
       const questions = await generateQuestionsForUnit(unitId, timeSlot);
 
       // currentQuestionsに保存
-      await db.collection("currentQuestions").doc(unitId).set({
+      await getDb().collection("currentQuestions").doc(unitId).set({
         questions: questions,
         timeSlot: timeSlot,
         date: getToday(),
@@ -68,12 +71,12 @@ async function generateQuestionsForUnit(unitId, timeSlot) {
 // マスターから質問を選出
 async function selectFromMaster(unitId, timeSlot, count) {
   // 該当時間帯の質問を取得
-  const questionsSnapshot = await db.collection("questions")
+  const questionsSnapshot = await getDb().collection("questions")
     .where("timeSlot", "==", timeSlot)
     .get();
 
   // 表示回数を取得
-  const statsDoc = await db.collection("questionStats").doc(unitId).get();
+  const statsDoc = await getDb().collection("questionStats").doc(unitId).get();
   const stats = statsDoc.exists ? statsDoc.data()[timeSlot] || {} : {};
 
   // 表示回数が少ない順にソート
@@ -110,9 +113,9 @@ async function selectFromMaster(unitId, timeSlot, count) {
     selected.forEach(q => {
       resetUpdates[`${timeSlot}.${q.id}`] = 1;
     });
-    await db.collection("questionStats").doc(unitId).set(resetUpdates, { merge: true });
+    await getDb().collection("questionStats").doc(unitId).set(resetUpdates, { merge: true });
   } else {
-    await db.collection("questionStats").doc(unitId).set(updates, { merge: true });
+    await getDb().collection("questionStats").doc(unitId).set(updates, { merge: true });
   }
 
   return selected;
@@ -122,7 +125,7 @@ async function selectFromMaster(unitId, timeSlot, count) {
 async function getYesterdayReport(unitId) {
   const yesterday = getYesterday();
 
-  const reportSnapshot = await db.collection("reports")
+  const reportSnapshot = await getDb().collection("reports")
     .where("unitId", "==", unitId)
     .where("date", "==", yesterday)
     .limit(1)
@@ -139,7 +142,7 @@ async function getYesterdayReport(unitId) {
 async function sendQuestionNotification(memberIds) {
   for (const memberId of memberIds) {
     try {
-      const userDoc = await db.collection("users").doc(memberId).get();
+      const userDoc = await getDb().collection("users").doc(memberId).get();
       const fcmToken = userDoc.data()?.fcmToken;
 
       if (fcmToken) {

@@ -1,6 +1,9 @@
 const admin = require("firebase-admin");
 
-const db = admin.firestore();
+// 遅延初期化
+function getDb() {
+  return admin.firestore();
+}
 
 // 回答作成時のトリガー処理
 async function handleAnswerCreated(snap, context) {
@@ -11,7 +14,7 @@ async function handleAnswerCreated(snap, context) {
 
   try {
     // UNITのメンバーを取得
-    const unitDoc = await db.collection("units").doc(unitId).get();
+    const unitDoc = await getDb().collection("units").doc(unitId).get();
     if (!unitDoc.exists) {
       console.error(`Unit ${unitId} not found`);
       return;
@@ -24,7 +27,7 @@ async function handleAnswerCreated(snap, context) {
 
     for (const memberId of otherMembers) {
       try {
-        const userDoc = await db.collection("users").doc(memberId).get();
+        const userDoc = await getDb().collection("users").doc(memberId).get();
         const fcmToken = userDoc.data()?.fcmToken;
 
         if (fcmToken) {

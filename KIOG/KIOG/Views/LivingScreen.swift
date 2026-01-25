@@ -333,6 +333,29 @@ struct LivingScreen: View {
                     .background(Color.purple.opacity(0.1))
                     .cornerRadius(8)
                 }
+
+                // 質問生成（Firestore）
+                Button(action: {
+                    Task {
+                        do {
+                            try await DebugService.shared.triggerQuestionGeneration(timeSlot: "morning")
+                            await fetchQuestionsAndAnswers()
+                        } catch {
+                            print("Failed to generate questions: \(error)")
+                        }
+                    }
+                }) {
+                    VStack(spacing: 2) {
+                        Image(systemName: "questionmark.circle.fill")
+                            .font(.system(size: 16))
+                        Text("QUE生成")
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(.green)
+                    .frame(width: 60, height: 44)
+                    .background(Color.green.opacity(0.1))
+                    .cornerRadius(8)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)

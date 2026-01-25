@@ -5,6 +5,7 @@ const { generateReport } = require("./generateReport");
 const { sendReportNotification } = require("./notify");
 const { generateQuestionsForAllUnits } = require("./generateQuestions");
 const { handleAnswerCreated } = require("./onAnswerCreated");
+const { seedQuestions } = require("./seedQuestions");
 
 admin.initializeApp();
 
@@ -303,3 +304,9 @@ exports.debugGenerateQuestions = functions
     await generateQuestionsForAllUnits(timeSlot);
     return { success: true };
   });
+
+// デバッグ用：質問マスターデータをシード
+exports.debugSeedQuestions = functions.https.onCall(async (data, context) => {
+  await seedQuestions();
+  return { success: true, message: "60 questions seeded" };
+});
